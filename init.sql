@@ -55,7 +55,8 @@ CREATE TABLE assistant_messages (
 );
 
 CREATE TABLE body_measurements_record (
-    user_id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     recoded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     left_arm_length FLOAT NOT NULL,
     right_arm_length FLOAT NOT NULL,
@@ -74,3 +75,43 @@ CREATE TABLE body_measurements_record (
     ankle_left_circumference FLOAT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
     );
+
+CREATE TABLE training_programs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    training_cycle_length INT NOT NULL,
+    goals JSON NOT NULL,
+    constraints JSON NOT NULL,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE training_cycles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    program_id INT NOT NULL,
+    day_index INT NOT NULL,
+    exercise_type INT NOT NULL,
+    FOREIGN KEY (program_id) REFERENCES training_programs(id) ON DELETE CASCADE
+);
+
+CREATE TABLE exercise_sets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    program_id INT NOT NULL,
+    set_key INT NOT NULL,
+    focus_area VARCHAR(255) NOT NULL,
+    FOREIGN KEY (program_id) REFERENCES training_programs(id) ON DELETE CASCADE
+);
+
+CREATE TABLE exercise_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    set_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    sets INT NOT NULL,
+    reps INT NOT NULL,
+    unit VARCHAR(50) NOT NULL,
+    weight_type VARCHAR(50),
+    weight_value FLOAT,
+    rest INT NOT NULL,
+    FOREIGN KEY (set_id) REFERENCES exercise_sets(id) ON DELETE CASCADE
+);
