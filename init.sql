@@ -1,18 +1,20 @@
-CREATE SCHEMA `hptest` DEFAULT CHARACTER SET utf8mb4 ;
+CREATE SCHEMA IF NOT EXISTS `hptest` DEFAULT CHARACTER SET utf8mb4;
 
-USE hptest;
+USE `hptest`;
 
-CREATE TABLE users(
-user_id INT AUTO_INCREMENT PRIMARY KEY,
-user_uuid CHAR(36) NOT NULL UNIQUE,
-user_name VARCHAR(100) NOT NULL,
-user_password VARCHAR(255) NOT NULL,
-phone_number VARCHAR(15) NOT NULL,
-email VARCHAR(100) NOT NULL,
-created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-last_login DATETIME DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+-- 사용자 테이블
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_uuid CHAR(36) NOT NULL UNIQUE,
+    user_name VARCHAR(100) NOT NULL,
+    user_password VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_login DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- 사용자 신체 정보
 CREATE TABLE user_body_profile (
     user_id INT PRIMARY KEY,
     user_age INT NOT NULL,
@@ -26,6 +28,7 @@ CREATE TABLE user_body_profile (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+-- 리프레시 토큰
 CREATE TABLE refresh_tokens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     token VARCHAR(255) NOT NULL UNIQUE,
@@ -36,6 +39,7 @@ CREATE TABLE refresh_tokens (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+-- 어시스턴트 스레드
 CREATE TABLE assistant_threads (
     thread_id CHAR(36) PRIMARY KEY,
     user_id INT NOT NULL,
@@ -45,6 +49,7 @@ CREATE TABLE assistant_threads (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+-- 어시스턴트 메시지
 CREATE TABLE assistant_messages (
     message_id INT AUTO_INCREMENT PRIMARY KEY,
     thread_id CHAR(36),
@@ -54,6 +59,7 @@ CREATE TABLE assistant_messages (
     FOREIGN KEY (thread_id) REFERENCES assistant_threads(thread_id) ON DELETE CASCADE
 );
 
+-- 신체 치수 기록
 CREATE TABLE body_measurements_record (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -74,19 +80,20 @@ CREATE TABLE body_measurements_record (
     calf_left_circumference FLOAT NOT NULL,
     ankle_left_circumference FLOAT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-    );
+);
 
+-- 운동 프로그램
 CREATE TABLE training_programs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     training_cycle_length INT NOT NULL,
-    goals JSON NOT NULL,
-    constraints JSON NOT NULL,
+    constraints TEXT NOT NULL,
     notes TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+-- 운동 주기
 CREATE TABLE training_cycles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     program_id INT NOT NULL,
@@ -95,14 +102,18 @@ CREATE TABLE training_cycles (
     FOREIGN KEY (program_id) REFERENCES training_programs(id) ON DELETE CASCADE
 );
 
+-- 세트 정보 (← cycle_id 포함됨)
 CREATE TABLE exercise_sets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     program_id INT NOT NULL,
+    cycle_id INT NOT NULL,
     set_key INT NOT NULL,
     focus_area VARCHAR(255) NOT NULL,
-    FOREIGN KEY (program_id) REFERENCES training_programs(id) ON DELETE CASCADE
+    FOREIGN KEY (program_id) REFERENCES training_programs(id) ON DELETE CASCADE,
+    FOREIGN KEY (cycle_id) REFERENCES training_cycles(id) ON DELETE CASCADE
 );
 
+-- 세트 안의 개별 운동 정보
 CREATE TABLE exercise_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     set_id INT NOT NULL,
