@@ -18,12 +18,12 @@ CREATE TABLE users (
 -- 사용자 신체 정보
 CREATE TABLE user_body_profile (
     user_id INT PRIMARY KEY,
-    user_age INT NOT NULL,
-    gender VARCHAR(10) NOT NULL,
-    height FLOAT NOT NULL,
-    weight FLOAT NOT NULL,
-    body_fat_percentage FLOAT NOT NULL,
-    body_muscle_mass FLOAT NOT NULL,
+    user_age INT NULL,
+    gender ENUM('male', 'female') NULL,
+    height FLOAT NULL,
+    weight FLOAT NULL,
+    body_fat_percentage FLOAT NULL,
+    body_muscle_mass FLOAT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
