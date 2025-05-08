@@ -101,7 +101,7 @@ CREATE TABLE training_cycles (
     FOREIGN KEY (program_id) REFERENCES training_programs(id) ON DELETE CASCADE
 );
 
--- 세트 정보 (← cycle_id 포함됨)
+-- 세트 정보
 CREATE TABLE exercise_sets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     program_id INT NOT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE exercise_sets (
     FOREIGN KEY (cycle_id) REFERENCES training_cycles(id) ON DELETE CASCADE
 );
 
--- 세트 안의 개별 운동 정보
+
 CREATE TABLE exercise_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     set_id INT NOT NULL,
