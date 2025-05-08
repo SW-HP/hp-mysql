@@ -10,6 +10,7 @@ CREATE TABLE users (
     user_password VARCHAR(255) NOT NULL,
     phone_number VARCHAR(15) NOT NULL,
     email VARCHAR(100) NOT NULL,
+    goals TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -21,10 +22,8 @@ CREATE TABLE user_body_profile (
     gender VARCHAR(10) NOT NULL,
     height FLOAT NOT NULL,
     weight FLOAT NOT NULL,
-    neck_circumference FLOAT NOT NULL,
     body_fat_percentage FLOAT NOT NULL,
     body_muscle_mass FLOAT NOT NULL,
-    body_bone_density FLOAT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
