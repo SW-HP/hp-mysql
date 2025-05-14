@@ -24,6 +24,8 @@ CREATE TABLE user_body_profile (
     weight FLOAT NULL,
     body_fat_percentage FLOAT NULL,
     body_muscle_mass FLOAT NULL,
+    injuries TEXT NULL,
+    equipment TEXT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
@@ -63,6 +65,7 @@ CREATE TABLE body_measurements_record (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     recoded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    height FLOAT NOT NULL,
     left_arm_length FLOAT NOT NULL,
     right_arm_length FLOAT NOT NULL,
     inside_leg_height FLOAT NOT NULL,
@@ -106,7 +109,6 @@ CREATE TABLE exercise_sets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     program_id INT NOT NULL,
     cycle_id INT NOT NULL,
-    set_key INT NOT NULL,
     focus_area VARCHAR(255) NOT NULL,
     FOREIGN KEY (program_id) REFERENCES training_programs(id) ON DELETE CASCADE,
     FOREIGN KEY (cycle_id) REFERENCES training_cycles(id) ON DELETE CASCADE
